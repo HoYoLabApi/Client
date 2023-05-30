@@ -25,10 +25,10 @@ public sealed class HoYoLabClient : HoYoLabClientBase, IHoYoLabClient
 	}
 
 	public async Task<IDailyClaimResult> DailyClaimAsync(IRequest request)
-		=> await PostAsync<DailyClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies)
+		=> await PostAsync<DailyClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
 			.ConfigureAwait(false);
 
 	public async Task<ICodeClaimResult> CodeClaimAsync(IRequest request) =>
-		await GetAsync<CodeClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies)
+		await GetAsync<CodeClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
 			.ConfigureAwait(false);
 }
