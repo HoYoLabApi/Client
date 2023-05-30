@@ -13,7 +13,7 @@ public sealed class AccountSearcher
 		m_client = client;
 	}
 	
-	public async Task<GameData> GetGameAccountAsync(ICookies cookies, string? game = null)
+	public async Task<GameData[]> GetGameAccountAsync(ICookies cookies, string? game = null)
 	{
 		var query = new Dictionary<string, string>()
 		{
@@ -29,12 +29,12 @@ public sealed class AccountSearcher
 			"account/binding/api/getUserGameRolesByCookieToken",
 			cookies,
 			query
-		)).ConfigureAwait(false)).Data.GameAccounts.FirstOrDefault()!;
+		)).ConfigureAwait(false)).Data.GameAccounts;
 	}
 	
-	public Task<GameData> GetGameAccountAsync(string cookies, string? game = null)
+	public Task<GameData[]> GetGameAccountAsync(string cookies, string? game = null)
 		=> GetGameAccountAsync(cookies.ParseCookies(), game);
 	
-	public Task<GameData> GetGameAccountAsync()
+	public Task<GameData[]> GetGameAccountAsync()
 		=> GetGameAccountAsync(m_client.Cookies!);
 }
