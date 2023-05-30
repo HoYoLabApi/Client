@@ -20,20 +20,4 @@ public sealed class CodesClaimer
 			request.SubDomain, cookies, request.Region!, code, request.GameAcc!
 		)).ConfigureAwait(false);
 	}
-
-	public async IAsyncEnumerable<ICodeClaimResult> CodesClaimAsync(
-		ICookies cookies,
-		string[] codes,
-		ClaimRequest request,
-		CancellationToken? cancellationToken = null)
-	{
-		cancellationToken ??= CancellationToken.None;
-		foreach (var code in codes)
-		{
-			if (cancellationToken.Value.IsCancellationRequested)
-				yield break;
-			
-			yield return await CodeClaimAsync(cookies, code, request).ConfigureAwait(false);
-		}
-	}
 }
