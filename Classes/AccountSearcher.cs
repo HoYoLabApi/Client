@@ -24,12 +24,16 @@ public sealed class AccountSearcher
 		if (game is not null)
 			query["game_biz"] = game;
 
-		return (await m_client.GetGamesArrayAsync(new Request(
+		var req = new Request(
 			"api-account-os",
 			"account/binding/api/getUserGameRolesByCookieToken",
 			cookies,
 			query
-		)).ConfigureAwait(false)).Data.GameAccounts;
+		);
+
+		var res = await m_client.GetGamesArrayAsync(req).ConfigureAwait(false);
+		
+		return (res).Data.GameAccounts;
 	}
 
 	public Task<GameData[]> GetGameAccountAsync(string cookies, string? game = null)

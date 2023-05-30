@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
+using System.Net.Http.Headers;
 using ComposableAsync;
 using HoYoLabApi.interfaces;
 using HoYoLabApi.Static;
@@ -9,11 +10,20 @@ namespace HoYoLabApi.Classes;
 
 public abstract class HoYoLabClientBase
 {
-	private static readonly HttpClient s_client =
-		new(TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(5)).AsDelegatingHandler());
+	private readonly TimeLimiter m_limiter = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(5));
+	private readonly HttpClient s_client;
 
 	public HoYoLabClientBase()
 	{
+		var cookieContainer = new CookieContainer();
+		cookieContainer.PerDomainCapacity = 1;
+
+		var handler = new HttpClientHandler();
+		handler.CookieContainer = cookieContainer;
+		handler.UseCookies = false;
+
+		s_client = new(handler);
+		
 		var h = s_client.DefaultRequestHeaders;
 		h.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 		h.Add("User-Agent",
@@ -74,14 +84,15 @@ public abstract class HoYoLabClientBase
 		return await Request<T>(message, cancellationToken).ConfigureAwait(false);
 	}
 
-	private static async Task<T> Request<T>(HttpRequestMessage requestMessage,
+	private async Task<T> Request<T>(HttpRequestMessage requestMessage,
 		CancellationToken? cancellationToken = null)
 	{
+		await m_limiter;
 		var response = await s_client.SendAsync(requestMessage, cancellationToken ?? CancellationToken.None)
 			.ConfigureAwait(false);
 		response.EnsureSuccessStatusCode();
 		var str = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
+		
 		return JsonConvert.DeserializeObject<T>(str)!;
 	}
 }
