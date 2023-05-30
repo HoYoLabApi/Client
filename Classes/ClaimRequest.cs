@@ -2,4 +2,8 @@
 
 namespace HoYoLabApi.Classes;
 
-public record ClaimRequest(string SubDomain, string Path, string? ActId = null, string? Region = null, GameData? GameAcc = null);
+public record ClaimRequest(string SubDomain,
+	string Path,
+	string? ActId = null,
+	string? Region = null,
+	GameData? GameAcc = null);

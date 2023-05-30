@@ -1,5 +1,4 @@
-﻿using System.Net;
-using HoYoLabApi.Classes;
+﻿using HoYoLabApi.Classes;
 using HoYoLabApi.interfaces;
 using HoYoLabApi.Models;
 using HoYoLabApi.Static;
@@ -8,13 +7,16 @@ namespace HoYoLabApi;
 
 public sealed class HoYoLabClient : HoYoLabClientBase, IHoYoLabClient
 {
-	public ICookies? Cookies { get; }
-
-	public HoYoLabClient(ICookies? cookies = null) => Cookies = cookies;
+	public HoYoLabClient(ICookies? cookies = null)
+	{
+		Cookies = cookies;
+	}
 
 	public HoYoLabClient(string cookiesString) : this(cookiesString.ParseCookies())
 	{
 	}
+
+	public ICookies? Cookies { get; }
 
 	public async Task<IGameResponse> GetGamesArrayAsync(IRequest request)
 	{
@@ -25,10 +27,14 @@ public sealed class HoYoLabClient : HoYoLabClientBase, IHoYoLabClient
 	}
 
 	public async Task<IDailyClaimResult> DailyClaimAsync(IRequest request)
-		=> await PostAsync<DailyClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
+	{
+		return await PostAsync<DailyClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
 			.ConfigureAwait(false);
+	}
 
-	public async Task<ICodeClaimResult> CodeClaimAsync(IRequest request) =>
-		await GetAsync<CodeClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
+	public async Task<ICodeClaimResult> CodeClaimAsync(IRequest request)
+	{
+		return await GetAsync<CodeClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
 			.ConfigureAwait(false);
+	}
 }

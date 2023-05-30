@@ -11,16 +11,16 @@ public sealed class CodeClaimRequest : Request
 			subDomain,
 			"common/apicdkey/api/webExchangeCdkey",
 			cookies,
-			new Dictionary<string, string>()
+			new Dictionary<string, string>
 			{
 				{ "uid", gameData.Uid.ToString() },
 				{ "region", region },
 				{ "game_biz", gameData.Game },
 				{ "cdkey", code },
 				{ "sLangKey", cookies.Language.GetLanguageString() },
-				{ "lang", cookies.Language.GetShortLang() },
+				{ "lang", cookies.Language.GetShortLang() }
 			},
-			new Dictionary<string, string>()
+			new Dictionary<string, string>
 			{
 				{ "Referer", "https://hsr.hoyoverse.com" },
 				{ "Orig", "https://hsr.hoyoverse.com" }
@@ -28,8 +28,12 @@ public sealed class CodeClaimRequest : Request
 		)
 	{
 	}
-	
-	public CodeClaimRequest(string subDomain, string path, ICookies? cookies, IDictionary<string, string>? query = null, IDictionary<string, string>? headers = null)
+
+	public CodeClaimRequest(string subDomain,
+		string path,
+		ICookies? cookies,
+		IDictionary<string, string>? query = null,
+		IDictionary<string, string>? headers = null)
 		: base(subDomain, path, cookies, query, headers)
 	{
 	}

@@ -1,5 +1,4 @@
 ﻿using HoYoLabApi.Enums;
-using HoYoLabApi.Static;
 using Newtonsoft.Json;
 
 namespace HoYoLabApi.interfaces;
@@ -7,9 +6,8 @@ namespace HoYoLabApi.interfaces;
 public interface ICookies
 {
 	[JsonIgnore] public Language Language { get; }
-	
-	[JsonIgnore]
-	public string CookieString { get; }
+
+	[JsonIgnore] public string CookieString { get; }
 
 	[JsonProperty("account_id")] public uint AccountId { get; }
 	[JsonProperty("ltuid")] public uint Ltuid { get; }

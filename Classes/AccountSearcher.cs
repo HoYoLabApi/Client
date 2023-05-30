@@ -12,18 +12,18 @@ public sealed class AccountSearcher
 	{
 		m_client = client;
 	}
-	
+
 	public async Task<GameData[]> GetGameAccountAsync(ICookies cookies, string? game = null)
 	{
-		var query = new Dictionary<string, string>()
+		var query = new Dictionary<string, string>
 		{
 			{ "uid", cookies.AccountId.ToString() },
-			{ "sLangKey", cookies.Language.GetLanguageString() },
+			{ "sLangKey", cookies.Language.GetLanguageString() }
 		};
 
 		if (game is not null)
 			query["game_biz"] = game;
-		
+
 		return (await m_client.GetGamesArrayAsync(new Request(
 			"api-account-os",
 			"account/binding/api/getUserGameRolesByCookieToken",
@@ -31,10 +31,14 @@ public sealed class AccountSearcher
 			query
 		)).ConfigureAwait(false)).Data.GameAccounts;
 	}
-	
+
 	public Task<GameData[]> GetGameAccountAsync(string cookies, string? game = null)
-		=> GetGameAccountAsync(cookies.ParseCookies(), game);
-	
+	{
+		return GetGameAccountAsync(cookies.ParseCookies(), game);
+	}
+
 	public Task<GameData[]> GetGameAccountAsync()
-		=> GetGameAccountAsync(m_client.Cookies!);
+	{
+		return GetGameAccountAsync(m_client.Cookies!);
+	}
 }

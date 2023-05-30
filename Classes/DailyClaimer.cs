@@ -5,18 +5,18 @@ namespace HoYoLabApi.Classes;
 
 public sealed class DailyClaimer
 {
-	private readonly IHoYoLabClient Client;
+	private readonly IHoYoLabClient m_client;
 	private readonly ClaimRequest m_dailyClaim;
 
 	public DailyClaimer(IHoYoLabClient client, ClaimRequest dailyClaim)
 	{
-		Client = client;
+		m_client = client;
 		m_dailyClaim = dailyClaim;
 	}
-	
+
 	public async Task<IDailyClaimResult> DailyClaimAsync(ICookies cookies)
 	{
-		return await Client.DailyClaimAsync(new Request(
+		return await m_client.DailyClaimAsync(new Request(
 			m_dailyClaim.SubDomain,
 			m_dailyClaim.Path,
 			cookies,
@@ -27,15 +27,16 @@ public sealed class DailyClaimer
 			}
 		)).ConfigureAwait(false);
 	}
-	
-	public async IAsyncEnumerable<IDailyClaimResult> DailiesClaimAsync(ICookies[] cookies, CancellationToken? cancellationToken = null)
+
+	public async IAsyncEnumerable<IDailyClaimResult> DailiesClaimAsync(ICookies[] cookies,
+		CancellationToken? cancellationToken = null)
 	{
 		cancellationToken ??= CancellationToken.None;
 		foreach (var cookie in cookies)
 		{
 			if (cancellationToken.Value.IsCancellationRequested)
 				yield break;
-			
+
 			yield return await DailyClaimAsync(cookie).ConfigureAwait(false);
 		}
 	}
