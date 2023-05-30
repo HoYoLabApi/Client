@@ -5,6 +5,22 @@
         <Nullable>enable</Nullable>
         <TargetFrameworks>net7.0;net6.0;net6.0-windows;net7.0-windows</TargetFrameworks>
         <LangVersion>10</LangVersion>
+        <RepositoryUrl>https://github.com/HoYoLabApi/Client</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Title>HoYoLabApi</Title>
+        <Authors>Satan1c</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>hoyolab hoyoverse mihoyo</PackageTags>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     </PropertyGroup>
 
     <ItemGroup>
