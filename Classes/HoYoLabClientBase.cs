@@ -5,7 +5,7 @@ using HoYoLabApi.Static;
 using Newtonsoft.Json;
 using RateLimiter;
 
-namespace HoYoLabApi;
+namespace HoYoLabApi.Classes;
 
 public abstract class HoYoLabClientBase
 {

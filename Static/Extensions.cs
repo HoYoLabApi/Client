@@ -47,4 +47,14 @@ public static class Extensions
 			_ => Language.English
 		};
 	}
+	
+	public static string GetShortLang(this Language language)
+	{
+		return language switch
+		{
+			Language.English => "en",
+			Language.Russian => "ru",
+			_ => "en"
+		};
+	}
 }
