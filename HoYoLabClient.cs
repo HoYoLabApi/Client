@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using HoYoLabApi.Classes;
 using HoYoLabApi.interfaces;
 using HoYoLabApi.Models;
 using HoYoLabApi.Static;

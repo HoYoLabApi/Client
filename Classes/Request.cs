@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using HoYoLabApi.interfaces;
 
-namespace HoYoLabApi.Models;
+namespace HoYoLabApi.Classes;
 
 public class Request : IRequest
 {
