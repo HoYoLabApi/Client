@@ -9,5 +9,8 @@ public enum Region : byte
 {
 	[EnumMember(Value = "Europe Server")] Europe,
 	[EnumMember(Value = "America Server")] America,
-	[EnumMember(Value = "Asia Server")] Asia
+	[EnumMember(Value = "Asia Server")] Asia,
+
+	[EnumMember(Value = "TW, HK, MO Server")]
+	Cht
 }
