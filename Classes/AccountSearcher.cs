@@ -13,7 +13,7 @@ public sealed class AccountSearcher
 		m_client = client;
 	}
 
-	public async Task<GameData[]> GetGameAccountAsync(ICookies cookies, string? game = null)
+	public async Task<(IGameResponse, Headers)> GetGameAccountAsync(ICookies cookies, string? game = null)
 	{
 		var query = new Dictionary<string, string>
 		{
@@ -31,17 +31,17 @@ public sealed class AccountSearcher
 			query
 		);
 
-		var res = await m_client.GetGamesArrayAsync(req).ConfigureAwait(false);
-		
-		return (res).Data.GameAccounts;
+		var (res, headers) = await m_client.GetGamesArrayAsync(req).ConfigureAwait(false);
+
+		return (res, headers);
 	}
 
-	public Task<GameData[]> GetGameAccountAsync(string cookies, string? game = null)
+	public Task<(IGameResponse, Headers)> GetGameAccountAsync(string cookies, string? game = null)
 	{
 		return GetGameAccountAsync(cookies.ParseCookies(), game);
 	}
 
-	public Task<GameData[]> GetGameAccountAsync()
+	public Task<(IGameResponse, Headers)> GetGameAccountAsync()
 	{
 		return GetGameAccountAsync(m_client.Cookies!);
 	}

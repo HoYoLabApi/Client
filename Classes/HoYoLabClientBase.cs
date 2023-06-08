@@ -2,15 +2,17 @@
 using System.Net.Http.Headers;
 using ComposableAsync;
 using HoYoLabApi.interfaces;
+using HoYoLabApi.Models;
 using HoYoLabApi.Static;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RateLimiter;
 
 namespace HoYoLabApi.Classes;
 
 public abstract class HoYoLabClientBase
 {
-	private readonly TimeLimiter m_limiter = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(5));
+	private readonly TimeLimiter m_limiter = TimeLimiter.GetFromMaxCountByInterval(1, TimeSpan.FromSeconds(6));
 	private readonly HttpClient s_client;
 
 	public HoYoLabClientBase()
@@ -33,10 +35,10 @@ public abstract class HoYoLabClientBase
 		h.Add("x-rpc-language", "en-us");
 	}
 
-	internal async Task<T> GetAsync<T>(Uri uri,
+	internal async Task<(T, Headers)> GetAsync<T>(Uri uri,
 		ICookies cookies,
 		IReadOnlyDictionary<string, string>? headers = null,
-		CancellationToken? cancellationToken = null)
+		CancellationToken? cancellationToken = null) where T : IResponse
 	{
 		var message = new HttpRequestMessage(HttpMethod.Get, uri);
 		var h = message.Headers;
@@ -45,8 +47,8 @@ public abstract class HoYoLabClientBase
 
 		if (!(h.Contains("Referer") || h.Contains("Orig")))
 		{
-			h.Add("Referer", "https://act.hoyolab.com");
-			h.Add("Orig", "https://act.hoyolab.com");
+			h.Add("Referer", "https://webstatic-sea.mihoyo.com");
+			h.Add("Orig", "https://webstatic-sea.mihoyo.com/");
 		}
 
 		if (headers is null)
@@ -58,10 +60,10 @@ public abstract class HoYoLabClientBase
 		return await Request<T>(message, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task<T> PostAsync<T>(Uri uri,
+	internal async Task<(T, Headers)> PostAsync<T>(Uri uri,
 		ICookies cookies,
 		IReadOnlyDictionary<string, string>? headers = null,
-		CancellationToken? cancellationToken = null)
+		CancellationToken? cancellationToken = null) where T : IResponse
 	{
 		var message = new HttpRequestMessage(HttpMethod.Post, uri);
 
@@ -71,8 +73,8 @@ public abstract class HoYoLabClientBase
 
 		if (!(h.Contains("Referer") || h.Contains("Orig")))
 		{
-			h.Add("Referer", "https://act.hoyolab.com");
-			h.Add("Orig", "https://act.hoyolab.com");
+			h.Add("Referer", "https://webstatic-sea.mihoyo.com");
+			h.Add("Orig", "https://webstatic-sea.mihoyo.com/");
 		}
 
 		if (headers is null)
@@ -84,15 +86,31 @@ public abstract class HoYoLabClientBase
 		return await Request<T>(message, cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<T> Request<T>(HttpRequestMessage requestMessage,
-		CancellationToken? cancellationToken = null)
+	private async Task<(T, Headers)> Request<T>(HttpRequestMessage requestMessage,
+		CancellationToken? cancellationToken = null) where T : IResponse
 	{
-		await m_limiter;
-		var response = await s_client.SendAsync(requestMessage, cancellationToken ?? CancellationToken.None)
+		var message = new HttpRequestMessage(requestMessage.Method, requestMessage.RequestUri);
+		message.Content = requestMessage.Content;
+		foreach (var (k, v) in requestMessage.Headers)
+		{
+			message.Headers.Add(k, v);
+		}
+		
+		var response = await s_client.SendAsync(message, cancellationToken ?? CancellationToken.None)
 			.ConfigureAwait(false);
 		response.EnsureSuccessStatusCode();
 		var str = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-		
-		return JsonConvert.DeserializeObject<T>(str)!;
+		var parsed = JsonConvert.DeserializeObject<T>(str)!;
+		if (parsed.Code == -2016)
+		{
+			await m_limiter;
+			return await Request<T>(message, cancellationToken);
+		}
+
+		var headers = Array.Empty<string>();
+		if (response.Headers.TryGetValues("Set-Cookie", out var header))
+			headers = header.ToArray();
+
+		return (parsed, new Headers { SetCookie = headers.FirstOrDefault(x => x.Contains("cookie_token"))?.Split("; ")[0] ?? string.Empty });
 	}
 }

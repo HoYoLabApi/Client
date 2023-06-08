@@ -1,4 +1,5 @@
 ﻿using HoYoLabApi.interfaces;
+using HoYoLabApi.Models;
 
 namespace HoYoLabApi.Classes;
 
@@ -13,7 +14,7 @@ public sealed class CodesClaimer
 		m_accountSearcher = accountSearcher;
 	}
 
-	public async Task<ICodeClaimResult> CodeClaimAsync(ICookies cookies, string code, ClaimRequest request)
+	public async Task<(ICodeClaimResult, Headers)> CodeClaimAsync(ICookies cookies, string code, ClaimRequest request)
 	{
 		return await m_client.CodeClaimAsync(new CodeClaimRequest(
 			request.SubDomain, cookies, request.Region!, code, request.GameAcc!
