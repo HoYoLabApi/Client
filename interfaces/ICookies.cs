@@ -9,8 +9,8 @@ public interface ICookies
 
 	[JsonIgnore] public string CookieString { get; }
 
-	[JsonProperty("account_id")] public uint AccountId { get; }
-	[JsonProperty("ltuid")] public uint Ltuid { get; }
+	[JsonProperty("account_id")] public ulong AccountId { get; }
+	[JsonProperty("ltuid")] public ulong Ltuid { get; }
 
 	[JsonProperty("mi18nLang")] public string Mi18NLang { get; }
 	[JsonProperty("ltoken")] public string Ltoken { get; }

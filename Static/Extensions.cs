@@ -11,7 +11,7 @@ public static class Extensions
 	{
 		var objString = cookieString.StartsWith('{') && cookieString.EndsWith('}')
 			? cookieString
-			: $@"{{""{cookieString.Replace("=", "\":\"").Replace("; ", "\", \"")}""}}";
+			: $@"{{""{cookieString.Replace("=", "\":\"").Replace("; ", "\", \"").Replace(";", "")}""}}";
 		var parsed = JsonConvert.DeserializeObject<Cookies>(objString)!;
 		parsed.CookieString = cookieString;
 

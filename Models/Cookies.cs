@@ -11,9 +11,9 @@ public class Cookies : ICookies
 
 	[JsonIgnore] public string CookieString { get; set; } = string.Empty;
 
-	[JsonProperty("account_id")] public uint AccountId { get; set; }
+	[JsonProperty("account_id")] public ulong AccountId { get; set; }
 
-	[JsonProperty("ltuid")] public uint Ltuid { get; set; }
+	[JsonProperty("ltuid")] public ulong Ltuid { get; set; }
 
 	[JsonProperty("mi18nLang")] public string Mi18NLang { get; set; }
 	[JsonProperty("ltoken")] public string Ltoken { get; set; }
