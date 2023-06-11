@@ -23,7 +23,7 @@ public sealed class CodeClaimRequest : Request
 			new Dictionary<string, string>
 			{
 				{ "Referer", "https://hsr.hoyoverse.com" },
-				{ "Orig", "https://hsr.hoyoverse.com" }
+				{ "Origin", "https://hsr.hoyoverse.com" }
 			}
 		)
 	{

@@ -18,7 +18,7 @@ public sealed class HoYoLabClient : HoYoLabClientBase, IHoYoLabClient
 
 	public ICookies? Cookies { get; }
 
-	public async Task<(IGameResponse, Headers)> GetGamesArrayAsync(IRequest request)
+	public async Task<IGameResponse> GetGamesArrayAsync(IRequest request)
 	{
 		var cookie = (request.Cookies ?? Cookies)!;
 		request.Query["sLangKey"] = cookie.Language.GetLanguageString();
@@ -26,13 +26,13 @@ public sealed class HoYoLabClient : HoYoLabClientBase, IHoYoLabClient
 		return await GetAsync<GameResponse>(request.GetFullUri(), cookie).ConfigureAwait(false);
 	}
 
-	public async Task<(IDailyClaimResult, Headers)> DailyClaimAsync(IRequest request)
+	public async Task<IDailyClaimResult> DailyClaimAsync(IRequest request)
 	{
 		return await PostAsync<DailyClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
 			.ConfigureAwait(false);
 	}
 
-	public async Task<(ICodeClaimResult, Headers)> CodeClaimAsync(IRequest request)
+	public async Task<ICodeClaimResult> CodeClaimAsync(IRequest request)
 	{
 		return await GetAsync<CodeClaimResult>(request.GetFullUri(), request.Cookies ?? Cookies!)
 			.ConfigureAwait(false);

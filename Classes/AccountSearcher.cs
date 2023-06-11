@@ -1,5 +1,4 @@
 ﻿using HoYoLabApi.interfaces;
-using HoYoLabApi.Models;
 using HoYoLabApi.Static;
 
 namespace HoYoLabApi.Classes;
@@ -13,7 +12,7 @@ public sealed class AccountSearcher
 		m_client = client;
 	}
 
-	public async Task<(IGameResponse, Headers)> GetGameAccountAsync(ICookies cookies, string? game = null)
+	public async Task<IGameResponse> GetGameAccountAsync(ICookies cookies, string? game = null)
 	{
 		var query = new Dictionary<string, string>
 		{
@@ -21,7 +20,7 @@ public sealed class AccountSearcher
 			{ "sLangKey", cookies.Language.GetLanguageString() }
 		};
 
-		if (game is not null)
+		if (!string.IsNullOrEmpty(game))
 			query["game_biz"] = game;
 
 		var req = new Request(
@@ -31,17 +30,17 @@ public sealed class AccountSearcher
 			query
 		);
 
-		var (res, headers) = await m_client.GetGamesArrayAsync(req).ConfigureAwait(false);
+		var res = await m_client.GetGamesArrayAsync(req).ConfigureAwait(false);
 
-		return (res, headers);
+		return res;
 	}
 
-	public Task<(IGameResponse, Headers)> GetGameAccountAsync(string cookies, string? game = null)
+	public Task<IGameResponse> GetGameAccountAsync(string cookies, string? game = null)
 	{
 		return GetGameAccountAsync(cookies.ParseCookies(), game);
 	}
 
-	public Task<(IGameResponse, Headers)> GetGameAccountAsync()
+	public Task<IGameResponse> GetGameAccountAsync()
 	{
 		return GetGameAccountAsync(m_client.Cookies!);
 	}

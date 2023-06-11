@@ -2,10 +2,8 @@
 using System.Net.Http.Headers;
 using ComposableAsync;
 using HoYoLabApi.interfaces;
-using HoYoLabApi.Models;
 using HoYoLabApi.Static;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using RateLimiter;
 
 namespace HoYoLabApi.Classes;
@@ -35,7 +33,7 @@ public abstract class HoYoLabClientBase
 		h.Add("x-rpc-language", "en-us");
 	}
 
-	internal async Task<(T, Headers)> GetAsync<T>(Uri uri,
+	internal async Task<T> GetAsync<T>(Uri uri,
 		ICookies cookies,
 		IReadOnlyDictionary<string, string>? headers = null,
 		CancellationToken? cancellationToken = null) where T : IResponse
@@ -45,7 +43,7 @@ public abstract class HoYoLabClientBase
 		h.Add("Cookie", cookies.CookieString);
 		h.Add("x-rpc-language", cookies.Language.GetLanguageString());
 
-		if (!(h.Contains("Referer") || h.Contains("Orig")))
+		if (!(h.Contains("Referer") || h.Contains("Origin")))
 		{
 			h.Add("Referer", "https://webstatic-sea.mihoyo.com");
 			h.Add("Orig", "https://webstatic-sea.mihoyo.com/");
@@ -60,7 +58,7 @@ public abstract class HoYoLabClientBase
 		return await Request<T>(message, cancellationToken).ConfigureAwait(false);
 	}
 
-	internal async Task<(T, Headers)> PostAsync<T>(Uri uri,
+	internal async Task<T> PostAsync<T>(Uri uri,
 		ICookies cookies,
 		IReadOnlyDictionary<string, string>? headers = null,
 		CancellationToken? cancellationToken = null) where T : IResponse
@@ -71,7 +69,7 @@ public abstract class HoYoLabClientBase
 		h.Add("Cookie", cookies.CookieString);
 		h.Add("x-rpc-language", cookies.Language.GetLanguageString());
 
-		if (!(h.Contains("Referer") || h.Contains("Orig")))
+		if (!(h.Contains("Referer") || h.Contains("Origin")))
 		{
 			h.Add("Referer", "https://webstatic-sea.mihoyo.com");
 			h.Add("Orig", "https://webstatic-sea.mihoyo.com/");
@@ -86,7 +84,7 @@ public abstract class HoYoLabClientBase
 		return await Request<T>(message, cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<(T, Headers)> Request<T>(HttpRequestMessage requestMessage,
+	private async Task<T> Request<T>(HttpRequestMessage requestMessage,
 		CancellationToken? cancellationToken = null) where T : IResponse
 	{
 		var message = new HttpRequestMessage(requestMessage.Method, requestMessage.RequestUri);
@@ -111,6 +109,6 @@ public abstract class HoYoLabClientBase
 		if (response.Headers.TryGetValues("Set-Cookie", out var header))
 			headers = header.ToArray();
 
-		return (parsed, new Headers { SetCookie = headers.FirstOrDefault(x => x.Contains("cookie_token"))?.Split("; ")[0] ?? string.Empty });
+		return parsed;
 	}
 }
