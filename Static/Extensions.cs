@@ -11,23 +11,23 @@ public static class Extensions
 	{
 		var objString = cookieString.StartsWith('{') && cookieString.EndsWith('}')
 			? cookieString
-			: $@"{{""{cookieString.Replace("=", "\":\"").Replace("; ", "\", \"")}""}}";
+			: $@"{{""{cookieString.Replace("=", "\":\"").Replace("; ", "\", \"").Replace(";", "")}""}}";
 		var parsed = JsonConvert.DeserializeObject<Cookies>(objString)!;
 		parsed.CookieString = cookieString;
-		
+
 		if (parsed.AccountId == 0 && parsed.Ltuid != 0)
 			parsed.AccountId = parsed.Ltuid;
 		else if (parsed.Ltuid == 0 && parsed.AccountId != 0)
 			parsed.Ltuid = parsed.AccountId;
-		
+
 		/*if (parsed.AccountId == string.Empty && parsed.Ltuid != string.Empty)
 			parsed.AccountId = parsed.Ltuid;
 		else if (parsed.Ltuid == string.Empty && parsed.AccountId != string.Empty)
 			parsed.Ltuid = parsed.AccountId;*/
-		
+
 		return parsed;
 	}
-	
+
 	public static string GetLanguageString(this Language language)
 	{
 		return language switch
@@ -37,7 +37,7 @@ public static class Extensions
 			_ => Languages.English
 		};
 	}
-	
+
 	public static Language GetLanguageFromString(this string str)
 	{
 		return str switch
@@ -47,7 +47,7 @@ public static class Extensions
 			_ => Language.English
 		};
 	}
-	
+
 	public static string GetShortLang(this Language language)
 	{
 		return language switch

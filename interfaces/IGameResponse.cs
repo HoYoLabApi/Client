@@ -5,6 +5,5 @@ namespace HoYoLabApi.interfaces;
 
 public interface IGameResponse : IResponse
 {
-	[JsonProperty("data")]
-	public Data Data { get; init; }
+	[JsonProperty("data")] public Data Data { get; init; }
 }
