@@ -15,7 +15,7 @@ public class Cookies : ICookies
 
 	[JsonProperty("ltuid")] public ulong Ltuid { get; set; }
 
-	[JsonProperty("mi18nLang")] public string Mi18NLang { get; set; }
-	[JsonProperty("ltoken")] public string Ltoken { get; set; }
-	[JsonProperty("cookie_token")] public string CookieToken { get; set; }
+	[JsonProperty("mi18nLang")] public string Mi18NLang { get; set; } = string.Empty;
+	[JsonProperty("ltoken")] public string Ltoken { get; set; } = string.Empty;
+	[JsonProperty("cookie_token")] public string CookieToken { get; set; } = string.Empty;
 }

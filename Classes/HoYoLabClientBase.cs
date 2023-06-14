@@ -99,16 +99,10 @@ public abstract class HoYoLabClientBase
 		response.EnsureSuccessStatusCode();
 		var str = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 		var parsed = JsonConvert.DeserializeObject<T>(str)!;
-		if (parsed.Code == -2016)
-		{
-			await m_limiter;
-			return await Request<T>(message, cancellationToken);
-		}
-
-		var headers = Array.Empty<string>();
-		if (response.Headers.TryGetValues("Set-Cookie", out var header))
-			headers = header.ToArray();
-
-		return parsed;
+		
+		if (parsed.Code != -2016) return parsed;
+		
+		await m_limiter;
+		return await Request<T>(message, cancellationToken);
 	}
 }

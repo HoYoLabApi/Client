@@ -20,8 +20,8 @@ public class Request : IRequest
 
 	public ICookies? Cookies { get; }
 
-	public string SubDomain { get; set; } = string.Empty;
-	public string Path { get; } = string.Empty;
+	public string SubDomain { get; set; }
+	public string Path { get; }
 	public IDictionary<string, string>? Headers { get; }
 	public IDictionary<string, string> Query { get; }
 

@@ -6,14 +6,7 @@ namespace HoYoLabApi.Classes;
 
 public abstract class ServiceRequests
 {
-	private readonly Func<GameData, ClaimRequest> s_codeClaim;
-
-	private readonly ClaimRequest s_dailyClaim = new(
-		"sg-hk4e-api",
-		"event/sol/sign",
-		"e202102251931481"
-	);
-
+	private readonly Func<GameData, ClaimRequest> m_codeClaim;
 	protected readonly IHoYoLabClient Client;
 
 	private readonly AccountSearcher m_accountSearcher;
@@ -22,10 +15,10 @@ public abstract class ServiceRequests
 
 	protected ServiceRequests(IHoYoLabClient client, Func<GameData, ClaimRequest> codeClaim, ClaimRequest dailyClaim)
 	{
-		s_codeClaim = codeClaim;
+		m_codeClaim = codeClaim;
 		Client = client;
 		m_accountSearcher = new AccountSearcher(client);
-		m_dailyClaimer = new DailyClaimer(client, s_dailyClaim);
+		m_dailyClaimer = new DailyClaimer(client, dailyClaim);
 		m_codesClaimer = new CodesClaimer(client, m_accountSearcher);
 	}
 	
@@ -46,7 +39,7 @@ public abstract class ServiceRequests
 	}
 
 	private async Task<ICodeClaimResult> CodeClaimAsync(ICookies cookies, string code, GameData acc)
-		=> await m_codesClaimer.CodeClaimAsync(cookies, code, s_codeClaim(acc));
+		=> await m_codesClaimer.CodeClaimAsync(cookies, code, m_codeClaim(acc));
 
 	public async Task<ICodeClaimResult> CodeClaimAsync(ICookies cookies, string code, Region? region = null)
 	{
